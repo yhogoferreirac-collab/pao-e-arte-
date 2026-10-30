@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pão & Arte | Padaria Artesanal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            50: '#FDFBF7',
+                            100: '#F7F2E6',
+                            200: '#EFE6D2',
+                        },
+                        bakery: {
+                            gold: '#C8A97E',
+                            brown: '#A67C52',
+                            dark: '#332214',
+                            deep: '#21150B'
+                        }
+                    },
+                    fontFamily: {
+                        title: ['Playfair Display', 'serif'],
+                        body: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7;
+            color: #332214;
+        }
+        .font-title {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F2E6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C8A97E;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A67C52;
+        }
+    </style>
+</head>
+<body class="bg-cream-50 text-bakery-dark antialiased">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- HEADER / NAVBAR -->
+    <header class="fixed top-0 left-0 w-full bg-cream-50/95 backdrop-blur-md z-40 border-b border-cream-200 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#inicio" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full bg-bakery-gold/20 flex items-center justify-center text-bakery-brown group-hover:bg-bakery-gold group-hover:text-white transition-all">
+                    <i class="fa-solid font-bold fa-wheat-awn text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-title text-2xl font-bold tracking-tight text-bakery-dark group-hover:text-bakery-brown transition-colors">Pão & Arte</span>
+                    <span class="text-[10px] tracking-widest uppercase text-bakery-brown font-semibold -mt-1">Padaria Artesanal</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
+                <a href="#inicio" class="hover:text-bakery-gold transition-colors py-1 border-b-2 border-transparent hover:border-bakery-gold">Início</a>
+                <a href="#cardapio" class="hover:text-bakery-gold transition-colors py-1 border-b-2 border-transparent hover:border-bakery-gold">Cardápio</a>
+                <a href="#historia" class="hover:text-bakery-gold transition-colors py-1 border-b-2 border-transparent hover:border-bakery-gold">Nossa História</a>
+                <a href="#depoimentos" class="hover:text-bakery-gold transition-colors py-1 border-b-2 border-transparent hover:border-bakery-gold">Depoimentos</a>
+                <a href="#contato" class="hover:text-bakery-gold transition-colors py-1 border-b-2 border-transparent hover:border-bakery-gold">Contato</a>
+            </nav>
+
+            <!-- Actions & Cart Button -->
+            <div class="flex items-center gap-4">
+                <button id="open-cart-btn" onclick="toggleCart(true)" class="relative p-2.5 rounded-full bg-cream-100 hover:bg-cream-200 text-bakery-dark transition-all focus:outline-none" aria-label="Carrinho">
+                    <i class="fa-solid fa-basket-shopping text-xl"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-bakery-brown text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center scale-0 transition-transform duration-300">0</span>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-bakery-dark hover:bg-cream-100 transition-colors" aria-label="Menu Mobile">
+                    <i id="mobile-menu-icon" class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cream-50 border-b border-cream-200 px-4 pt-2 pb-6 space-y-3">
+            <a href="#inicio" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium border-b border-cream-100">Início</a>
+            <a href="#cardapio" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium border-b border-cream-100">Cardápio</a>
+            <a href="#historia" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium border-b border-cream-100">Nossa História</a>
+            <a href="#depoimentos" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium border-b border-cream-100">Depoimentos</a>
+            <a href="#contato" onclick="toggleMobileMenu()" class="block py-2 text-base font-medium">Contato</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="pt-20">
+
+        <!-- HERO SECTION -->
+        <section id="inicio" class="relative min-h-[calc(100vh-5rem)] flex items-center py-12 lg:py-0 overflow-hidden bg-gradient-to-b from-cream-50 via-cream-100/50 to-cream-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Left Column Text -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left pt-6 lg:pt-0">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cream-200/70 border border-bakery-gold/30 text-bakery-brown text-xs sm:text-sm font-semibold tracking-wide uppercase">
+                            <i class="fa-solid fa-fire text-bakery-gold"></i> Fermentação Natural 100% Levain
+                        </div>
+                        
+                        <h1 class="font-title text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-bakery-dark">
+                            O verdadeiro sabor do pão <span class="text-bakery-brown italic font-normal">feito à mão.</span>
+                        </h1>
+                        
+                        <p class="text-slate-700 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Resgatamos a tradição milenar da panificação artesanal. Crostas crocantes, miolos macios, aroma inconfundível e ingredientes selecionados com carinho todos os dias.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                            <a href="#cardapio" class="px-8 py-4 bg-bakery-brown hover:bg-bakery-dark text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-utensils text-sm"></i> Ver Cardápio
+                            </a>
+                            <a href="#historia" class="px-8 py-4 bg-transparent hover:bg-cream-200 border border-bakery-brown text-bakery-dark font-medium rounded-full transition-all text-center flex items-center justify-center gap-2">
+                                Conheça Nossa História
+                            </a>
+                        </div>
+
+                        <!-- Highlights list -->
+                        <div class="pt-6 grid grid-cols-3 gap-4 border-t border-cream-200 text-left max-w-lg mx-auto lg:mx-0">
+                            <div>
+                                <span class="font-title text-2xl font-bold text-bakery-brown">24h+</span>
+                                <p class="text-xs text-slate-600">Fermentação Lenta</p>
+                            </div>
+                            <div>
+                                <span class="font-title text-2xl font-bold text-bakery-brown">100%</span>
+                                <p class="text-xs text-slate-600">Orgânico e Puríssimo</p>
+                            </div>
+                            <div>
+                                <span class="font-title text-2xl font-bold text-bakery-brown">Frescor</span>
+                                <p class="text-xs text-slate-600">Fornadas Diárias</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column Image & Badge -->
+                    <div class="lg:col-span-5 relative flex justify-center">
+                        <div class="relative w-full max-w-md lg:max-w-none">
+                            <!-- Background Glow/Shape -->
+                            <div class="absolute -inset-4 bg-gradient-to-tr from-bakery-gold/20 to-bakery-brown/20 rounded-3xl blur-2xl -z-10"></div>
+                            
+                            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800" 
+                                 onerror="this.src='https://placehold.co/800x800/A67C52/FFF?text=P%C3%A3o+Artesanal'"
+                                 alt="Pães Artesanais Recém Assados" 
+                                 class="rounded-3xl shadow-2xl object-cover w-full h-[400px] sm:h-[480px] border-4 border-white">
+
+                            <!-- Rating Badge -->
+                            <div class="absolute -bottom-6 -left-4 sm:bottom-6 sm:-left-6 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-cream-100">
+                                <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-xl font-bold">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1 text-amber-500 text-sm">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span class="font-bold text-slate-900 text-base ml-1">4.9 / 5.0</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 font-medium">+1.200 avaliações no Google</p>
+                                </div>
+                            </div>
+
+                            <!-- Floating Badge -->
+                            <div class="absolute -top-4 -right-4 bg-bakery-dark text-white p-4 rounded-2xl shadow-lg text-center hidden sm:block">
+                                <span class="block text-xs uppercase tracking-wider text-bakery-gold font-semibold">Fornada Quentinha</span>
+                                <span class="font-title text-sm font-bold">A partir das 07:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CARDÁPIO SECTION -->
+        <section id="cardapio" class="py-20 bg-cream-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Title -->
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-bakery-brown uppercase text-xs tracking-widest font-bold">Delícias Fresquinhas</span>
+                    <h2 class="font-title text-3xl sm:text-4xl font-bold text-bakery-dark mt-2">Nosso Cardápio Artesanal</h2>
+                    <p class="text-slate-600 mt-3 text-sm sm:text-base">Escolha entre nossas especialidades preparadas diariamente com grãos selecionados e técnica tradicional.</p>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10" id="category-filters">
+                    <button onclick="filterCategory('todos')" class="filter-btn active px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-bakery-brown text-white shadow-md">Todos</button>
+                    <button onclick="filterCategory('paes')" class="filter-btn px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-cream-100 text-bakery-dark hover:bg-cream-200">Pães</button>
+                    <button onclick="filterCategory('bolos')" class="filter-btn px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-cream-100 text-bakery-dark hover:bg-cream-200">Bolos</button>
+                    <button onclick="filterCategory('cafes')" class="filter-btn px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-cream-100 text-bakery-dark hover:bg-cream-200">Cafés</button>
+                    <button onclick="filterCategory('doces')" class="filter-btn px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-cream-100 text-bakery-dark hover:bg-cream-200">Doces</button>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Dinamicamente preenchido pelo Javascript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- NOSSA HISTÓRIA SECTION -->
+        <section id="historia" class="py-20 bg-cream-100/60 border-y border-cream-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Images Grid -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=600" 
+                             onerror="this.src='https://placehold.co/600x600/A67C52/FFF?text=Padeiro'"
+                             alt="Padeiro trabalhando a massa" 
+                             class="rounded-2xl shadow-md w-full h-64 object-cover">
+                        <img src="https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&q=80&w=600" 
+                             onerror="this.src='https://placehold.co/600x600/A67C52/FFF?text=Levain'"
+                             alt="Levain fermento natural" 
+                             class="rounded-2xl shadow-md w-full h-64 object-cover mt-8">
+                    </div>
+
+                    <!-- Text Content -->
+                    <div class="space-y-6">
+                        <span class="text-bakery-brown uppercase text-xs tracking-widest font-bold">Tradição & Amor</span>
+                        <h2 class="font-title text-3xl sm:text-4xl font-bold text-bakery-dark">A arte de respeitar o tempo do pão</h2>
+                        <p class="text-slate-700 leading-relaxed">
+                            Fundada em 2015, a **Pão & Arte** nasceu do desejo de resgatar o sabor autêntico da fermentação natural. Acreditamos que o segredo de um bom pão está no respeito ao tempo de descanso da massa e no carinho em cada dobra.
+                        </p>
+                        <p class="text-slate-700 leading-relaxed">
+                            Nosso fermento mãe (Levain) é cultivado diariamente, proporcionando pães com casca crocante, miolo aerado e índice glicêmico reduzido, facilitando a digestão e promovendo saúde a cada fatia.
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-bakery-gold/20 flex items-center justify-center text-bakery-brown">
+                                    <i class="fa-solid fa-leaf"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-bakery-dark">Sem Aditivos Químicos</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-bakery-gold/20 flex items-center justify-center text-bakery-brown">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-bakery-dark">Fermentação de 36 Horas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- DEPOIMENTOS SECTION -->
+        <section id="depoimentos" class="py-20 bg-cream-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-bakery-brown uppercase text-xs tracking-widest font-bold">Feedback dos Clientes</span>
+                    <h2 class="font-title text-3xl sm:text-4xl font-bold text-bakery-dark mt-2">O que dizem sobre nós</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-cream-200 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                            <p class="text-slate-700 italic text-sm">"O Sourdough de Azeitonas é impecável! Dá para sentir o cuidado e o sabor da fermentação natural de verdade. Sou cliente fiel há anos."</p>
+                        </div>
+                        <div class="flex items-center gap-3 mt-6 pt-6 border-t border-cream-100">
+                            <div class="w-10 h-10 rounded-full bg-bakery-gold/30 flex items-center justify-center font-bold text-bakery-dark">MC</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-bakery-dark">Mariana Costa</h4>
+                                <span class="text-xs text-slate-500">Cliente Frequente</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-cream-200 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                            <p class="text-slate-700 italic text-sm">"Os croissants parecem ter sido feitos em Paris! Mantêm a crocância e amanteigado ideais. O atendimento via WhatsApp também é super rápido."</p>
+                        </div>
+                        <div class="flex items-center gap-3 mt-6 pt-6 border-t border-cream-100">
+                            <div class="w-10 h-10 rounded-full bg-bakery-gold/30 flex items-center justify-center font-bold text-bakery-dark">RS</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-bakery-dark">Ricardo Santos</h4>
+                                <span class="text-xs text-slate-500">Amante de Café & Pães</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-cream-200 flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <div class="flex text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                            <p class="text-slate-700 italic text-sm">"Encomendei o bolo de cenoura artesanal para um aniversário em família e todos amaram! A qualidade dos ingredientes faz toda diferença."</p>
+                        </div>
+                        <div class="flex items-center gap-3 mt-6 pt-6 border-t border-cream-100">
+                            <div class="w-10 h-10 rounded-full bg-bakery-gold/30 flex items-center justify-center font-bold text-bakery-dark">CF</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-bakery-dark">Camila Fernandes</h4>
+                                <span class="text-xs text-slate-500">Vizinha do Bairro</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER & CONTATO -->
+    <footer id="contato" class="bg-bakery-dark text-cream-100 pt-16 pb-12 border-t border-bakery-brown/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+                
+                <!-- Col 1: About -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-bakery-gold flex items-center justify-center text-bakery-dark">
+                            <i class="fa-solid fa-wheat-awn text-lg"></i>
+                        </div>
+                        <span class="font-title text-2xl font-bold text-white">Pão & Arte</span>
+                    </div>
+                    <p class="text-sm text-cream-200/80 leading-relaxed">
+                        Panificação artesanal com fermentação natural, unindo tradição, carinho e ingredientes selecionados para sua mesa.
+                    </p>
+                    <div class="flex gap-3 text-lg pt-2">
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/5 hover:bg-bakery-gold hover:text-bakery-dark flex items-center justify-center transition-all"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/5 hover:bg-bakery-gold hover:text-bakery-dark flex items-center justify-center transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/5 hover:bg-bakery-gold hover:text-bakery-dark flex items-center justify-center transition-all"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Horários -->
+                <div class="space-y-4">
+                    <h3 class="font-title text-lg font-bold text-white border-b border-bakery-gold/30 pb-2 inline-block">Horários de Fornada</h3>
+                    <ul class="space-y-2 text-sm text-cream-200/80">
+                        <li class="flex justify-between"><span>Segunda - Sexta:</span> <span class="font-medium text-white">06:30 - 20:00</span></li>
+                        <li class="flex justify-between"><span>Sábado:</span> <span class="font-medium text-white">07:00 - 19:00</span></li>
+                        <li class="flex justify-between"><span>Domingo e Feriados:</span> <span class="font-medium text-white">07:30 - 13:00</span></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Localização -->
+                <div class="space-y-4">
+                    <h3 class="font-title text-lg font-bold text-white border-b border-bakery-gold/30 pb-2 inline-block">Onde Estamos</h3>
+                    <ul class="space-y-3 text-sm text-cream-200/80">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-bakery-gold mt-1"></i>
+                            <span>Rua dos Padeiros, 142 - Bairro Das Flores, São Paulo - SP</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-bakery-gold"></i>
+                            <span>(11) 99876-5432</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-bakery-gold"></i>
+                            <span>contato@paoearte.com.br</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Newsletter -->
+                <div class="space-y-4">
+                    <h3 class="font-title text-lg font-bold text-white border-b border-bakery-gold/30 pb-2 inline-block">Novidades & Promoções</h3>
+                    <p class="text-xs text-cream-200/80">Cadastre-se para receber avisos de fornadas especiais e descontos exclusivos.</p>
+                    <form onsubmit="handleNewsletter(event)" class="space-y-2">
+                        <input type="email" placeholder="Seu melhor e-mail" required class="w-full px-4 py-2.5 rounded-lg bg-white/10 border border-white/20 text-white placeholder-cream-200/50 text-sm focus:outline-none focus:border-bakery-gold">
+                        <button type="submit" class="w-full py-2.5 bg-bakery-gold hover:bg-bakery-brown text-bakery-dark hover:text-white font-semibold rounded-lg text-sm transition-colors">Inscrever-se</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Bottom Credits -->
+            <div class="pt-8 text-center text-xs text-cream-200/60 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 Pão & Arte | Padaria Artesanal. Todos os direitos reservados.</p>
+                <p>Feito com carinho e fermentação natural.</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- MODAL DETAILS OF PRODUCT -->
+    <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/80 hover:bg-white text-slate-700 flex items-center justify-center shadow-md transition-all">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div id="modal-product-content">
+                <!-- Conteúdo Injetado via JS -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- DRAWER SIDEBAR DO CARRINHO DE COMPRAS -->
+    <div id="cart-drawer-overlay" onclick="toggleCart(false)" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <!-- Header Carrinho -->
+        <div class="p-6 border-b border-cream-200 flex items-center justify-between bg-cream-50">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-basket-shopping text-xl text-bakery-brown"></i>
+                <h3 class="font-title text-xl font-bold text-bakery-dark">Seu Pedido</h3>
+            </div>
+            <button onclick="toggleCart(false)" class="w-8 h-8 rounded-full hover:bg-cream-200 text-slate-500 flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Lista de Itens do Carrinho -->
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Injetado dinamicamente via JS -->
+        </div>
+
+        <!-- Footer Carrinho -->
+        <div class="p-6 border-t border-cream-200 bg-cream-50 space-y-4">
+            
+            <!-- Delivery Type Switch -->
+            <div class="space-y-2">
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-500">Opção de Entrega</label>
+                <div class="grid grid-cols-2 gap-2 p-1 bg-cream-200/60 rounded-xl text-xs font-medium">
+                    <button id="delivery-pickup" onclick="setDeliveryType('pickup')" class="py-2 rounded-lg transition-all text-center font-semibold bg-white text-bakery-dark shadow-sm">
+                        <i class="fa-solid fa-store mr-1"></i> Retirar (Grátis)
+                    </button>
+                    <button id="delivery-ship" onclick="setDeliveryType('delivery')" class="py-2 rounded-lg transition-all text-center font-semibold text-slate-600 hover:text-bakery-dark">
+                        <i class="fa-solid fa-motorcycle mr-1"></i> Delivery (R$ 8,00)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumo Preço -->
+            <div class="space-y-1.5 pt-2 border-t border-cream-200 text-sm">
+                <div class="flex justify-between text-slate-600">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                    <span>Taxa de Entrega</span>
+                    <span id="cart-delivery-fee">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between text-base font-bold text-bakery-dark pt-2 border-t border-cream-200">
+                    <span>Total</span>
+                    <span id="cart-total" class="text-bakery-brown">R$ 0,00</span>
+                </div>
+            </div>
+
+            <button onclick="openCheckoutModal()" id="checkout-btn" disabled class="w-full py-3.5 bg-bakery-brown hover:bg-bakery-dark disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                <span>Finalizar Pedido</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+        </div>
+    </aside>
+
+
+    <!-- MODAL CHECKOUT -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl p-6 relative max-h-[90vh] flex flex-col">
+            
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="font-title text-2xl font-bold text-bakery-dark mb-1">Dados para Envio</h3>
+            <p class="text-xs text-slate-500 mb-6">Preencha seus dados para enviar o pedido direto para nosso WhatsApp.</p>
+
+            <form onsubmit="processCheckout(event)" class="space-y-4 overflow-y-auto pr-1">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Seu Nome *</label>
+                    <input type="text" id="cust-name" required placeholder="Ex: Ana Silva" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-bakery-brown">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Telefone / WhatsApp *</label>
+                    <input type="tel" id="cust-phone" required placeholder="(11) 99999-9999" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-bakery-brown">
+                </div>
+
+                <!-- Campo de Endereço Dinâmico se for delivery -->
+                <div id="address-field-wrapper">
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Endereço de Entrega *</label>
+                    <input type="text" id="cust-address" placeholder="Rua, número, complemento e bairro" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-bakery-brown">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Forma de Pagamento *</label>
+                    <select id="cust-payment" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-bakery-brown">
+                        <option value="Pix">Pix (Chave enviada no WhatsApp)</option>
+                        <option value="Cartão de Crédito/Débito">Cartão na Entrega / Retirada</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Observações (Opcional)</label>
+                    <textarea id="cust-obs" rows="2" placeholder="Ex: Fatiar o pão, troco para R$ 50..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-bakery-brown resize-none"></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Pedido via WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // DATA PRODUCTS
+        const products = [
+            {
+                id: 1,
+                name: "Sourdough Tradicional",
+                category: "paes",
+                categoryName: "Pães",
+                price: 24.90,
+                rating: 5.0,
+                image: "https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?auto=format&fit=crop&q=80&w=600",
+                description: "Pão de fermentação natural clássico. Casca crocante e dourada com miolo alvéolado, levemente acidulado."
+            },
+            {
+                id: 2,
+                name: "Croissant Amanteigado",
+                category: "doces",
+                categoryName: "Doces",
+                price: 12.50,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=600",
+                description: "Clássico croissant folhado com manteiga de primeira qualidade. Leve, crocante e derrete na boca."
+            },
+            {
+                id: 3,
+                name: "Bolo Caseiro de Cenoura",
+                category: "bolos",
+                categoryName: "Bolos",
+                price: 32.00,
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&q=80&w=600",
+                description: "Bolo fofinho de cenoura com cobertura generosa de brigadeiro cremoso gourmet 50% cacau."
+            },
+            {
+                id: 4,
+                name: "Café Espresso Especial",
+                category: "cafes",
+                categoryName: "Cafés",
+                price: 8.50,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=600",
+                description: "Grãos 100% Arábica de torra média artesanal. Notas sensoriais de chocolate ao leite e nozes."
+            },
+            {
+                id: 5,
+                name: "Focaccia de Alecrim & Tomate",
+                category: "paes",
+                categoryName: "Pães",
+                price: 28.00,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&q=80&w=600",
+                description: "Massa leve e aerada regada com azeite extra virgem, alecrim fresco, tomates sweet grape e flor de sal."
+            },
+            {
+                id: 6,
+                name: "Cappuccino Cremoso",
+                category: "cafes",
+                categoryName: "Cafés",
+                price: 13.90,
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&q=80&w=600",
+                description: "Espresso duplo, leite vaporizado aveludado e um toque sutil de cacau em pó e canela."
+            },
+            {
+                id: 7,
+                name: "Torta Tartalete de Morango",
+                category: "doces",
+                categoryName: "Doces",
+                price: 16.00,
+                rating: 5.0,
+                image: "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&q=80&w=600",
+                description: "Massa sablée crocante, creme patissière aveludado com favas de baunilha e morangos frescos."
+            },
+            {
+                id: 8,
+                name: "Bolo Red Velvet",
+                category: "bolos",
+                categoryName: "Bolos",
+                price: 45.00,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&q=80&w=600",
+                description: "Massa aveludada de cacau com toque de baunilha e recheio cremoso à base de Cream Cheese."
+            }
+        ];
+
+        // APP STATE
+        let cart = [];
+        let deliveryType = 'pickup'; // 'pickup' ou 'delivery'
+        const DELIVERY_FEE = 8.00;
+        const PHONE_WHATSAPP = "5511998765432"; // Número para envio de pedidos
+
+        // INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts('todos');
+            updateCartUI();
+        });
+
+        // RENDER PRODUCTS
+        function renderProducts(category) {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'todos' 
+                ? products 
+                : products.filter(p => p.category === category);
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-cream-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative overflow-hidden cursor-pointer" onclick="openProductModal(${product.id})">
+                            <img src="${product.image}" 
+                                 onerror="this.src='https://placehold.co/600x400/A67C52/FFF?text=${encodeURIComponent(product.name)}'" 
+                                 alt="${product.name}" 
+                                 class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-bakery-brown uppercase tracking-wider">
+                                ${product.categoryName}
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 onclick="openProductModal(${product.id})" class="font-title font-bold text-lg text-bakery-dark cursor-pointer hover:text-bakery-brown transition-colors">
+                                    ${product.name}
+                                </h3>
+                            </div>
+                            <div class="flex items-center gap-1 text-amber-500 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-slate-700">${product.rating}</span>
+                            </div>
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
+                                ${product.description}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5 pt-0 flex items-center justify-between border-t border-cream-100/60 mt-auto">
+                        <span class="font-title text-xl font-bold text-bakery-dark">
+                            R$ ${product.price.toFixed(2).replace('.', ',')}
+                        </span>
+                        <button onclick="addToCart(${product.id})" class="px-3.5 py-2 rounded-xl bg-cream-100 hover:bg-bakery-brown text-bakery-dark hover:text-white font-medium text-xs transition-all flex items-center gap-1.5 active:scale-95">
+                            <i class="fa-solid fa-plus text-xs"></i> Adicionar
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // FILTER CATEGORIES
+        function filterCategory(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-bakery-brown', 'text-white', 'shadow-md');
+                btn.classList.add('bg-cream-100', 'text-bakery-dark');
+            });
+
+            event.target.classList.remove('bg-cream-100', 'text-bakery-dark');
+            event.target.classList.add('bg-bakery-brown', 'text-white', 'shadow-md');
+
+            renderProducts(category);
+        }
+
+        // CART LOGIC
+        function addToCart(productId, qty = 1) {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push({ ...product, quantity: qty });
+            }
+
+            updateCartUI();
+            showToast(`"${product.name}" adicionado ao carrinho!`);
+        }
+
+        function changeQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(i => i.id !== productId);
+            updateCartUI();
+        }
+
+        function setDeliveryType(type) {
+            deliveryType = type;
+            const pickupBtn = document.getElementById('delivery-pickup');
+            const shipBtn = document.getElementById('delivery-ship');
+            const addressWrapper = document.getElementById('address-field-wrapper');
+            const addressInput = document.getElementById('cust-address');
+
+            if (type === 'pickup') {
+                pickupBtn.className = "py-2 rounded-lg transition-all text-center font-semibold bg-white text-bakery-dark shadow-sm";
+                shipBtn.className = "py-2 rounded-lg transition-all text-center font-semibold text-slate-600 hover:text-bakery-dark";
+                addressWrapper.style.display = 'none';
+                addressInput.removeAttribute('required');
+            } else {
+                shipBtn.className = "py-2 rounded-lg transition-all text-center font-semibold bg-white text-bakery-dark shadow-sm";
+                pickupBtn.className = "py-2 rounded-lg transition-all text-center font-semibold text-slate-600 hover:text-bakery-dark";
+                addressWrapper.style.display = 'block';
+                addressInput.setAttribute('required', 'required');
+            }
+
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            // Badge Counter
+            const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cart-badge');
+            badge.innerText = totalQty;
+            if (totalQty > 0) {
+                badge.classList.remove('scale-0');
+            } else {
+                badge.classList.add('scale-0');
+            }
+
+            // Container Items
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-basket-shopping text-5xl mb-4 text-cream-200"></i>
+                        <p class="font-medium text-slate-600">Seu carrinho está vazio</p>
+                        <p class="text-xs mt-1">Adicione pães frescos e guloseimas para continuar.</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = "flex gap-3 bg-cream-50 p-3 rounded-2xl border border-cream-200 items-center";
+                    itemEl.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm text-bakery-dark truncate">${item.name}</h4>
+                            <span class="text-xs font-semibold text-bakery-brown">
+                                R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}
+                            </span>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="changeQuantity(${item.id}, -1)" class="w-6 h-6 rounded-md bg-white border border-slate-200 text-xs flex items-center justify-center hover:bg-slate-100">-</button>
+                                <span class="text-xs font-bold w-4 text-center">${item.quantity}</span>
+                                <button onclick="changeQuantity(${item.id}, 1)" class="w-6 h-6 rounded-md bg-white border border-slate-200 text-xs flex items-center justify-center hover:bg-slate-100">+</button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-slate-400 hover:text-red-500 p-2">
+                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        </button>
+                    `;
+                    container.appendChild(itemEl);
+                });
+            }
+
+            // Subtotal & Totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const fee = (deliveryType === 'delivery' && cart.length > 0) ? DELIVERY_FEE : 0;
+            const total = subtotal + fee;
+
+            document.getElementById('cart-subtotal').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            document.getElementById('cart-delivery-fee').innerText = deliveryType === 'delivery' ? `R$ ${DELIVERY_FEE.toFixed(2).replace('.', ',')}` : 'Grátis';
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+
+            // Checkout Button State
+            document.getElementById('checkout-btn').disabled = cart.length === 0;
+        }
+
+        // TOGGLE CART SIDEBAR
+        function toggleCart(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-drawer-overlay');
+
+            if (open) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                    drawer.classList.remove('translate-x-full');
+                }, 10);
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // MODAL PRODUCT DETAILS
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const modalContent = document.getElementById('modal-product-content');
+            modalContent.innerHTML = `
+                <img src="${product.image}" 
+                     onerror="this.src='https://placehold.co/600x400/A67C52/FFF?text=${encodeURIComponent(product.name)}'" 
+                     alt="${product.name}" class="w-full h-60 object-cover">
+                <div class="p-6">
+                    <span class="text-xs font-semibold uppercase text-bakery-brown tracking-wider">${product.categoryName}</span>
+                    <h3 class="font-title text-2xl font-bold text-bakery-dark mt-1">${product.name}</h3>
+                    <div class="flex items-center gap-1 text-amber-500 text-sm my-2">
+                        <i class="fa-solid fa-star"></i>
+                        <span class="font-bold text-slate-700">${product.rating}</span>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed my-4">${product.description}</p>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t border-cream-200">
+                        <span class="font-title text-2xl font-bold text-bakery-dark">
+                            R$ ${product.price.toFixed(2).replace('.', ',')}
+                        </span>
+                        <button onclick="addToCart(${product.id}); closeProductModal();" class="px-6 py-3 bg-bakery-brown hover:bg-bakery-dark text-white font-semibold rounded-xl transition-colors shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-basket-shopping"></i> Adicionar ao Pedido
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.firstElementChild.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('product-modal');
+            modal.firstElementChild.classList.add('scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // MODAL CHECKOUT
+        function openCheckoutModal() {
+            if (cart.length === 0) return;
+            toggleCart(false);
+
+            // Ajusta o formulário de acordo com o tipo de entrega
+            setDeliveryType(deliveryType);
+
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // PROCESS CHECKOUT TO WHATSAPP
+        function processCheckout(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+            const payment = document.getElementById('cust-payment').value;
+            const obs = document.getElementById('cust-obs').value;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const fee = deliveryType === 'delivery' ? DELIVERY_FEE : 0;
+            const total = subtotal + fee;
+
+            let text = `🍞 *NOVO PEDIDO - PÃO & ARTE* 🥖\n\n`;
+            text += `*Cliente:* ${name}\n`;
+            text += `*Contato:* ${phone}\n`;
+            text += `*Tipo:* ${deliveryType === 'delivery' ? 'Delivery 🛵' : 'Retirada na Loja 🏪'}\n`;
+            if (deliveryType === 'delivery') {
+                text += `*Endereço:* ${address}\n`;
+            }
+            text += `*Forma de Pagamento:* ${payment}\n\n`;
+
+            text += `*ITENS DO PEDIDO:*\n`;
+            cart.forEach(item => {
+                text += `• ${item.quantity}x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
+            });
+
+            text += `\n*Subtotal:* R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+            text += `*Taxa de Entrega:* ${deliveryType === 'delivery' ? `R$ ${DELIVERY_FEE.toFixed(2).replace('.', ',')}` : 'Grátis'}\n`;
+            text += `*TOTAL:* R$ ${total.toFixed(2).replace('.', ',')}\n`;
+
+            if (obs.trim() !== '') {
+                text += `\n*Observações:* ${obs}\n`;
+            }
+
+            const encodedText = encodeURIComponent(text);
+            const whatsappUrl = `https://wa.me/${PHONE_WHATSAPP}?text=${encodedText}`;
+
+            // Reset Cart & Close Modal
+            cart = [];
+            updateCartUI();
+            closeCheckoutModal();
+
+            showToast("Redirecionando para o WhatsApp...");
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = "fa-solid fa-xmark text-xl";
+            } else {
+                menu.classList.add('hidden');
+                icon.className = "fa-solid fa-bars text-xl";
+            }
+        }
+
+        // NEWSLETTER HANDLER
+        function handleNewsletter(e) {
+            e.preventDefault();
+            showToast("Inscrição realizada com sucesso! 🎉");
+            e.target.reset();
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-bakery-dark text-white px-4 py-3 rounded-xl shadow-xl text-sm flex items-center gap-2 transform translate-y-2 opacity-0 transition-all pointer-events-auto border border-bakery-gold/30";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-bakery-gold"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
